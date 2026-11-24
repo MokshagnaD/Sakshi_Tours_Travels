@@ -1,0 +1,231 @@
+const mongoose = require('mongoose');
+const Package = require('../models/Package');
+
+const samplePackages = [
+  {
+    title: 'Goa Beach Paradise',
+    description: 'Experience the vibrant beaches and nightlife of Goa. Includes 4 nights stay at a beachfront resort, water sports, and local cuisine tours.',
+    destination: 'Goa',
+    price: 18999,
+    duration: '5 Days 4 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500'
+    ],
+    highlights: ['Beach Resort Stay', 'Water Sports', 'Local Cuisine', 'Sunset Cruise'],
+    itinerary: [
+      { day: 1, activity: 'Arrival and check-in at beachfront resort' },
+      { day: 2, activity: 'Water sports activities - parasailing, jet skiing' },
+      { day: 3, activity: 'Local market tour and beach relaxation' },
+      { day: 4, activity: 'Sunset cruise and Goan cuisine dinner' },
+      { day: 5, activity: 'Departure' }
+    ],
+    availableSeats: 20,
+    ratings: 4.5,
+    reviews: 45
+  },
+  {
+    title: 'Kerala Backwaters Escape',
+    description: 'Relax in the serene backwaters of Kerala. Includes houseboat stay, spice plantation tour, and ayurvedic spa treatments.',
+    destination: 'Kerala',
+    price: 24999,
+    duration: '6 Days 5 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500'
+    ],
+    highlights: ['Houseboat Cruise', 'Spice Plantation', 'Ayurvedic Spa', 'Beach Visit'],
+    itinerary: [
+      { day: 1, activity: 'Arrival and houseboat check-in' },
+      { day: 2, activity: 'Backwater cruise and fishing' },
+      { day: 3, activity: 'Spice plantation tour' },
+      { day: 4, activity: 'Ayurvedic spa and wellness treatments' },
+      { day: 5, activity: 'Beach visit and relaxation' },
+      { day: 6, activity: 'Departure' }
+    ],
+    availableSeats: 15,
+    ratings: 4.8,
+    reviews: 62
+  },
+  {
+    title: 'Rajasthan Heritage Tour',
+    description: 'Discover the royal heritage of Rajasthan. Visit Jaipur, Jodhpur, and Udaipur with palace tours and camel safari.',
+    destination: 'Rajasthan',
+    price: 32999,
+    duration: '8 Days 7 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500'
+    ],
+    highlights: ['Palace Tours', 'Camel Safari', 'City Palace', 'Hawa Mahal'],
+    itinerary: [
+      { day: 1, activity: 'Arrival in Jaipur' },
+      { day: 2, activity: 'City Palace and Hawa Mahal tour' },
+      { day: 3, activity: 'Travel to Jodhpur - Mehrangarh Fort' },
+      { day: 4, activity: 'Camel safari in the desert' },
+      { day: 5, activity: 'Travel to Udaipur' },
+      { day: 6, activity: 'Lake Palace and boat tour' },
+      { day: 7, activity: 'Shopping and local culture' },
+      { day: 8, activity: 'Departure' }
+    ],
+    availableSeats: 25,
+    ratings: 4.6,
+    reviews: 78
+  },
+  {
+    title: 'Himalayan Adventure',
+    description: 'Trek through the breathtaking Himalayas. Includes mountain lodging, guided treks, and local village interactions.',
+    destination: 'Himachal Pradesh',
+    price: 28999,
+    duration: '7 Days 6 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500'
+    ],
+    highlights: ['Mountain Trek', 'Snow Activities', 'Local Villages', 'Scenic Views'],
+    itinerary: [
+      { day: 1, activity: 'Arrival in Manali' },
+      { day: 2, activity: 'Acclimatization trek' },
+      { day: 3, activity: 'High altitude trek' },
+      { day: 4, activity: 'Village interaction and homestay' },
+      { day: 5, activity: 'Mountain exploration' },
+      { day: 6, activity: 'Leisure and photography' },
+      { day: 7, activity: 'Departure' }
+    ],
+    availableSeats: 12,
+    ratings: 4.7,
+    reviews: 54
+  },
+  {
+    title: 'Taj Mahal & Agra Express',
+    description: 'Experience the majesty of the Taj Mahal. Includes Taj Mahal tour, Agra Fort, and Delhi sightseeing.',
+    destination: 'Uttar Pradesh',
+    price: 15999,
+    duration: '4 Days 3 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500'
+    ],
+    highlights: ['Taj Mahal', 'Agra Fort', 'Delhi Sightseeing', 'Local Markets'],
+    itinerary: [
+      { day: 1, activity: 'Delhi arrival and exploration' },
+      { day: 2, activity: 'Travel to Agra and Taj Mahal sunset view' },
+      { day: 3, activity: 'Taj Mahal sunrise and Agra Fort tour' },
+      { day: 4, activity: 'Return to Delhi and departure' }
+    ],
+    availableSeats: 30,
+    ratings: 4.9,
+    reviews: 125
+  },
+  {
+    title: 'Maldives Luxury Escape',
+    description: 'Tropical paradise with overwater bungalows, snorkeling, and island hopping. All-inclusive resort experience.',
+    destination: 'Maldives',
+    price: 89999,
+    duration: '6 Days 5 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500'
+    ],
+    highlights: ['Overwater Bungalow', 'Snorkeling', 'Island Hopping', 'Spa'],
+    itinerary: [
+      { day: 1, activity: 'Arrival and resort check-in' },
+      { day: 2, activity: 'Snorkeling adventure' },
+      { day: 3, activity: 'Island hopping tour' },
+      { day: 4, activity: 'Spa and relaxation' },
+      { day: 5, activity: 'Water sports and beach activities' },
+      { day: 6, activity: 'Departure' }
+    ],
+    availableSeats: 10,
+    ratings: 5.0,
+    reviews: 89
+  },
+  {
+    title: 'Mysore Palace & Coffee Plantations',
+    description: 'Explore the royal Mysore Palace and scenic coffee estates. Includes plantation tour, palace visit, and local cuisine.',
+    destination: 'Karnataka',
+    price: 13999,
+    duration: '3 Days 2 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500',
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500'
+    ],
+    highlights: ['Mysore Palace', 'Coffee Plantation', 'Local Cuisine', 'Market Tour'],
+    itinerary: [
+      { day: 1, activity: 'Arrival and Mysore Palace illumination' },
+      { day: 2, activity: 'Coffee plantation tour and tasting' },
+      { day: 3, activity: 'Local markets and departure' }
+    ],
+    availableSeats: 20,
+    ratings: 4.4,
+    reviews: 38
+  },
+  {
+    title: 'Leh Ladakh Expedition',
+    description: 'High altitude adventure in Ladakh. Includes Leh Palace, Pangong Lake, and Chang La pass trek.',
+    destination: 'Ladakh',
+    price: 42999,
+    duration: '9 Days 8 Nights',
+    images: [
+      'https://images.unsplash.com/photo-1537225228614-b4fad34687b9?w=500',
+      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500'
+    ],
+    highlights: ['Pangong Lake', 'Leh Palace', 'High Passes', 'Monasteries'],
+    itinerary: [
+      { day: 1, activity: 'Arrival in Leh - acclimatization' },
+      { day: 2, activity: 'Leh Palace and local monasteries' },
+      { day: 3, activity: 'Nubra Valley exploration' },
+      { day: 4, activity: 'Camel safari on sand dunes' },
+      { day: 5, activity: 'Travel to Pangong Lake' },
+      { day: 6, activity: 'Pangong Lake activities' },
+      { day: 7, activity: 'Return journey with stops' },
+      { day: 8, activity: 'Rest and shopping' },
+      { day: 9, activity: 'Departure' }
+    ],
+    availableSeats: 18,
+    ratings: 4.8,
+    reviews: 67
+  }
+];
+
+async function seedPackages() {
+  try {
+  // Connect to MongoDB (fail fast if MongoDB not reachable)
+  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/sakshi_tours';
+  await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+
+    // Clear existing packages
+    await Package.deleteMany({});
+    console.log('Cleared existing packages');
+
+    // Insert sample packages
+    const inserted = await Package.insertMany(samplePackages);
+    console.log(`Successfully inserted ${inserted.length} packages`);
+
+    // Display inserted packages
+    const allPackages = await Package.find();
+    console.log('\nInserted Packages:');
+    allPackages.forEach((pkg, index) => {
+      console.log(`${index + 1}. ${pkg.title} - ₹${pkg.price} (${pkg.destination})`);
+    });
+
+    process.exit(0);
+  } catch (error) {
+    console.error('Error seeding packages:', error.message || error);
+
+    // If MongoDB is not available, write sample packages to a JSON file as a fallback
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const outPath = path.resolve(__dirname, 'packages_dump.json');
+      fs.writeFileSync(outPath, JSON.stringify(samplePackages, null, 2), 'utf8');
+      console.log(`Wrote sample packages to ${outPath}. You can import them into MongoDB later.`);
+      process.exit(0);
+    } catch (fsErr) {
+      console.error('Also failed to write fallback JSON:', fsErr);
+      process.exit(1);
+    }
+  }
+}
+
+seedPackages();
